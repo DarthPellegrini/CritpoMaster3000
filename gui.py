@@ -35,7 +35,9 @@ class Application():
             +"3. Escolha o modo de encriptação (somente DES, DES3 e AES)\n"
             +"4. Insira a chave de encriptação (regras no botão abaixo da chave)\n"
             +"5. Pressione \'Cifrar\' ou \'Decifrar\'\n"
-            +"6. Pressionar \'Enviar\' para enviar a mensagem\n",font=('Times',16),borderwidth=3).grid(row=1,column=1,columnspan=5)
+            +"6. Insira o endereço IP do destinatário ao lado do botão 'Enviar'\n"
+            +"6.1. Deixe este campo em branco para enviar em modo broadcast\n"
+            +"7. Pressionar \'Enviar\' para enviar a mensagem\n",font=('Times',16),borderwidth=3).grid(row=1,column=1,columnspan=5)
         
         self.algorithms = {0:"Caesar", 1:"Vigenère", 2:"One-time pad", 3:"Playflair", 4:"Hill", 5:"DES", 6:"DES3", 7:"AES"}
         self.txtAlgorithms = []
@@ -92,8 +94,11 @@ class Application():
         self.btnDecifra = Button(self.root,text="Decifrar",command= lambda : self.cipher(1))
         self.btnDecifra.grid(row=12,column=1,padx=20,sticky='E')
 
+        self.entryIP = Entry(self.root, width=14)
+        self.entryIP.grid(row=12,column=3, padx=5, sticky='W')
+
         self.btnEnvia = Button(self.root,text="Enviar",command=self.findServer)
-        self.btnEnvia.grid(row=12,column=3)
+        self.btnEnvia.grid(row=12,column=3, padx=5, sticky='E')
 
         self.btnInfoKeys = Button(self.root, text="Regras da Chave",command=self.showKeyTips)
         self.btnInfoKeys.grid(row=12,column=5)
@@ -127,13 +132,22 @@ class Application():
         pass
 
     def findServer(self):
-        ip = self.getOwnIP()
-        #dev mode
-        #print("IP: ",ip)
-        splittedIP = ip.split('.')
-        for addr in range(0,256):
-            serverIP = splittedIP[0] + '.' + splittedIP[1] + '.' + splittedIP[2] + '.' + str(addr)
-            threading._start_new_thread(self.sendMessage,(serverIP,))
+        try:
+            ip = self.entryIP.get()
+            socket.inet_aton(ip)
+            if not ip:
+                #broadcast mode
+                splittedIP = self.getOwnIP().split('.')
+                for addr in range(0,256):
+                    serverIP = splittedIP[0] + '.' + splittedIP[1] + '.' + splittedIP[2] + '.' + str(addr)
+                    threading._start_new_thread(self.sendMessage,(serverIP,))
+            else:
+                #single message mode
+                threading._start_new_thread(self.sendMessage,(ip,))
+        except:
+            messagebox.showerror("Erro no endereço IP","Endereço inválido!\n\nPor favor, verifique se o endereço está correto.")
+
+
         
     def getOwnIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
