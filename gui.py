@@ -134,7 +134,6 @@ class Application():
     def findServer(self):
         try:
             ip = self.entryIP.get()
-            socket.inet_aton(ip)
             if not ip:
                 #broadcast mode
                 splittedIP = self.getOwnIP().split('.')
@@ -143,6 +142,7 @@ class Application():
                     threading._start_new_thread(self.sendMessage,(serverIP,))
             else:
                 #single message mode
+                socket.inet_aton(ip)
                 threading._start_new_thread(self.sendMessage,(ip,))
         except:
             messagebox.showerror("Erro no endereço IP","Endereço inválido!\n\nPor favor, verifique se o endereço está correto.")
