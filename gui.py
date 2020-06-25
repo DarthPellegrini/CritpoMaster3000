@@ -37,7 +37,7 @@ class Application():
             +"5. Pressione \'Cifrar\' ou \'Decifrar\'\n"
             +"6. Insira o endereço IP do destinatário ao lado do botão 'Enviar'\n"
             +"6.1. Deixe este campo em branco para enviar em modo broadcast\n"
-            +"7. Pressionar \'Enviar\' para enviar a mensagem\n",font=('Times',16),borderwidth=3).grid(row=1,column=1,columnspan=5)
+            +"7. Pressione \'Enviar\' para enviar a mensagem\n",font=('Times',16),borderwidth=3).grid(row=1,column=1,columnspan=5)
         
         self.algorithms = {0:"Caesar", 1:"Vigenère", 2:"One-time pad", 3:"Playflair", 4:"Hill", 5:"DES", 6:"DES3", 7:"AES"}
         self.txtAlgorithms = []
