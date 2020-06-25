@@ -3,14 +3,14 @@ from Crypto.Util import Counter
 import base64
 
 BLOCK_SIZE = 16
-iv = b'this is an iv123'
+iv = b'super_iv'
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
 unpad = lambda s: s[:-ord(s[len(s) - 1:])]
 
 def encrypt(message,key,mode):
     message = pad(message)
     if(mode == 6):
-        cipher = DES3.new(key=key, mode=mode, counter=Counter.new(128)) 
+        cipher = DES3.new(key=key, mode=mode, counter=Counter.new(64)) 
     else:
         cipher = DES3.new(key, mode, iv) 
     message = str(base64.b64encode(cipher.encrypt(message)))
@@ -19,7 +19,7 @@ def encrypt(message,key,mode):
 def decrypt(message,key,mode):
     message = base64.b64decode(message)
     if(mode == 6):
-        cipher = DES3.new(key=key, mode=mode, counter=Counter.new(128)) 
+        cipher = DES3.new(key=key, mode=mode, counter=Counter.new(64)) 
     else:
         cipher = DES3.new(key, mode, iv) 
     message = str(unpad(cipher.decrypt(message)))

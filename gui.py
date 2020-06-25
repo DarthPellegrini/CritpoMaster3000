@@ -42,7 +42,7 @@ class Application():
         for k in self.algorithms:
             self.txtAlgorithms.append(self.algorithms[k])
 
-        self.modes = {'ECB - Eletronic Codebook':1, 'CBC - Cipher Block Chaining':2 ,'CFB - Cipher Feedback':4, 'OFB - Output Feedback':5, 'CTR - Counter':6}
+        self.modes = {'ECB - Eletronic Codebook':1, 'CBC - Cipher Block Chaining':2 ,'CFB - Cipher Feedback':3, 'OFB - Output Feedback':5, 'CTR - Counter':6}
         self.txtModes = []        
         for k in self.modes:
             self.txtModes.append(k)
@@ -109,8 +109,8 @@ class Application():
             while True:
                 data_arr = conn.recv(4096)
                 if not data_arr: break
-                # LAN mode
-                # elif addr[0] == self.getOwnIP(): break
+                # Single-Machine mode
+                elif addr[0] == self.getOwnIP(): break
                 data = pickle.loads(data_arr)
                 msg = data[0].decode()
                 cipher = int(data[1])
@@ -153,19 +153,19 @@ class Application():
             client.close()
 
     def cipher(self,encryptOrDecrypt):
-        if (self.txtMessage.get(0.0,END).splitlines()[0].isalpha()):
-            if(self.validateKey()):
-                msg = self.txtMessage.get('0.0',END).splitlines()[0]
-                cipher = self.methods[encryptOrDecrypt].get(self.cbCifra.current()) 
-                cipherText = cipher(msg,self.entryKey.get(),self.modes.get(self.cbMode.get()))
-                self.txtMessage.delete('0.0',END)
-                self.txtMessage.insert(END,cipherText)
-                msg += ' foi '  + ('encriptado' if encryptOrDecrypt == 0 else 'decriptado') + ' para ' + cipherText + ((' no modo ' + (self.cbMode.get()[:3])) if self.cbCifra.current() > 4 else '')
-                self.writeLog(msg)
-            else:
-                messagebox.showerror("Erro na chave","Chave inválida!\n\nPor favor, verifique as regras.")
+        #if (self.txtMessage.get(0.0,END).splitlines()[0].isalpha()):
+        if(self.validateKey()):
+            msg = self.txtMessage.get('0.0',END).splitlines()[0]
+            cipher = self.methods[encryptOrDecrypt].get(self.cbCifra.current()) 
+            cipherText = cipher(msg,self.entryKey.get(),self.modes.get(self.cbMode.get()))
+            self.txtMessage.delete('0.0',END)
+            self.txtMessage.insert(END,cipherText)
+            msg += ' foi '  + ('encriptado' if encryptOrDecrypt == 0 else 'decriptado') + ' para ' + cipherText + ((' no modo ' + (self.cbMode.get()[:3])) if self.cbCifra.current() > 4 else '')
+            self.writeLog(msg)
         else:
-            messagebox.showerror("Erro na mensagem","Mensagem inválida!\n\nPor favor, verifique que contém somente letras e espaços.")
+            messagebox.showerror("Erro na chave","Chave inválida!\n\nPor favor, verifique as regras.")
+        #else:
+        #    messagebox.showerror("Erro na mensagem","Mensagem inválida!\n\nPor favor, verifique que contém somente letras e espaços.")
     def validateKey(self):
         key = self.entryKey.get()
         if (self.cbCifra.current() == 0):
@@ -192,7 +192,6 @@ class Application():
             return re.search("^[A-Za-z0-9]*$",key) and (len(key) == 16 or len(key) == 24)
         elif (self.cbCifra.current() == 7):
             return re.search("^[A-Za-z0-9]*$",key) and (len(key) == 16 or len(key) == 24 or len(key) == 32)
-        #{0:"Caesar", 1:"Vigenère", 2:"One-time pad", 3:"Playflair", 4:"Hill", 5:"DES", 6:"DES3", 7:"AES"}
 
     def special_match(self,str, search=re.compile(r'[^0-1.]').search):
         return not bool(search(str))
