@@ -50,7 +50,7 @@ class Application():
         self.methods = [{0:caesar.encrypt, 1:vigenere.encrypt, 2:onetimepad.encrypt, 3:playfair.encrypt, 4:hill.encrypt, 5:des.encrypt, 6:des3.encrypt, 7:aes.encrypt},
                         {0:caesar.decrypt, 1:vigenere.decrypt, 2:onetimepad.decrypt, 3:playfair.decrypt, 4:hill.decrypt, 5:des.decrypt, 6:des3.decrypt, 7:aes.decrypt}]
 
-        Label(self.root,text="Mensagem a ser enviada (somente uma linha com letras e espaços): ").grid(row=3,column=1,columnspan=3,sticky="W")
+        Label(self.root,text="Mensagem a ser enviada (somente uma linha): ").grid(row=3,column=1,columnspan=3,sticky="W")
 
         self.txtMessage = Text(self.root,borderwidth=3,height=3)
         self.txtMessage.grid(row=4,column=1,columnspan=5)
@@ -153,19 +153,19 @@ class Application():
             client.close()
 
     def cipher(self,encryptOrDecrypt):
-        #if (self.txtMessage.get(0.0,END).splitlines()[0].isalpha()):
-        if(self.validateKey()):
-            msg = self.txtMessage.get('0.0',END).splitlines()[0]
-            cipher = self.methods[encryptOrDecrypt].get(self.cbCifra.current()) 
-            cipherText = cipher(msg,self.entryKey.get(),self.modes.get(self.cbMode.get()))
-            self.txtMessage.delete('0.0',END)
-            self.txtMessage.insert(END,cipherText)
-            msg += ' foi '  + ('encriptado' if encryptOrDecrypt == 0 else 'decriptado') + ' para ' + cipherText + ((' no modo ' + (self.cbMode.get()[:3])) if self.cbCifra.current() > 4 else '')
-            self.writeLog(msg)
+        if ((re.search("^[A-Za-z ]*$",self.txtMessage.get(0.0,END).splitlines()[0]) and encryptOrDecrypt == 0) or encryptOrDecrypt == 1):
+            if(self.validateKey()):
+                msg = self.txtMessage.get('0.0',END).splitlines()[0]
+                cipher = self.methods[encryptOrDecrypt].get(self.cbCifra.current()) 
+                cipherText = cipher(msg,self.entryKey.get(),self.modes.get(self.cbMode.get()))
+                self.txtMessage.delete('0.0',END)
+                self.txtMessage.insert(END,cipherText)
+                msg += ' foi '  + ('encriptado' if encryptOrDecrypt == 0 else 'decriptado') + ' para ' + cipherText + ((' no modo ' + (self.cbMode.get()[:3])) if self.cbCifra.current() > 4 else '')
+                self.writeLog(msg)
+            else:
+                messagebox.showerror("Erro na chave","Chave inválida!\n\nPor favor, verifique as regras.")
         else:
-            messagebox.showerror("Erro na chave","Chave inválida!\n\nPor favor, verifique as regras.")
-        #else:
-        #    messagebox.showerror("Erro na mensagem","Mensagem inválida!\n\nPor favor, verifique que contém somente letras e espaços.")
+            messagebox.showerror("Erro na mensagem","Mensagem inválida!\n\nPor favor, verifique que contém somente letras e espaços.")
     def validateKey(self):
         key = self.entryKey.get()
         if (self.cbCifra.current() == 0):
