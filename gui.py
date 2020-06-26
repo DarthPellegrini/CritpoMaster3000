@@ -114,7 +114,7 @@ class Application():
             while True:
                 data_arr = conn.recv(4096)
                 if not data_arr: break
-                # Single-Machine mode
+                # Single-System mode: comment the next line
                 elif addr[0] == self.getOwnIP(): break
                 data = pickle.loads(data_arr)
                 msg = data[0].decode()
@@ -147,8 +147,6 @@ class Application():
         except:
             messagebox.showerror("Erro no endereço IP","Endereço inválido!\n\nPor favor, verifique se o endereço está correto.")
 
-
-        
     def getOwnIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("1.1.1.1", 80))
@@ -180,6 +178,7 @@ class Application():
                 messagebox.showerror("Erro na chave","Chave inválida!\n\nPor favor, verifique as regras.")
         else:
             messagebox.showerror("Erro na mensagem","Mensagem inválida!\n\nPor favor, verifique que contém somente letras e espaços.")
+
     def validateKey(self):
         key = self.entryKey.get()
         if (self.cbCifra.current() == 0):

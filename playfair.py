@@ -67,7 +67,7 @@ def encrypt(msg,key,mode):  #Encryption
         else:
             txt += ("{}{}".format(my_matrix[loc[0]][loc1[1]],my_matrix[loc1[0]][loc[1]])) + ' '    
         i=i+2       
-    return txt #TODO return text 
+    return txt 
                  
 def decrypt(msg,key,mode):  #decryption
     txt = ''
@@ -92,4 +92,4 @@ def decrypt(msg,key,mode):  #decryption
         else:
             txt += ("{}{}".format(my_matrix[loc[0]][loc1[1]],my_matrix[loc1[0]][loc[1]])) + ' '    
         i=i+2    
-    return txt #TODO return text
+    return txt

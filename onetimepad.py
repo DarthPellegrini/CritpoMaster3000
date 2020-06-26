@@ -16,14 +16,6 @@ def to_str(string):
         res += tmp
     return res
 
-def encryptOneTimePad(text,key):
-    return xor(convert_to_bits(text),key) 
-
-def decryptOneTimePad(cipher, key):
-    return xor(key, convert_to_bits(cipher))
-
-
-### BETTER IMPLEMENTATION (?) ###
 def encrypt(msg, key, mode):
     '''Return cipher text'''
     cipher = xor_str(msg, key)
